@@ -1,0 +1,34 @@
+#!/bin/bash
+
+function download
+{
+    echo "remover e baixar novo arquivo: tim-intn-lib-sqoop-hdp-1.0.0.jar"
+    rm -f tim-intn-lib-sqoop-hdp-1.0.0.jar
+    wget https://s3.amazonaws.com/brpedromaia/tim-intn-lib-sqoop-hdp-1.0.0.jar
+
+
+    echo "remover, baixar e descompactar novo arquivo: tim-intn-lib-sqoop-hdp-1.0.0.jar"
+    rm -f tim-intn-lib-sqoop-hdp-1.0.0-deploy.tar.gz
+    rm -rf tim-intn-lib-sqoop-hdp
+    wget https://s3.amazonaws.com/brpedromaia/tim-intn-lib-sqoop-hdp-1.0.0-deploy.tar.gz
+    tar -zxvf tim-intn-lib-sqoop-hdp-1.0.0-deploy.tar.gz
+    cp -f tim-intn-lib-sqoop-hdp/resources/sqoop-lib-configuration.xml ./
+}
+
+function run
+{
+    hdfs dfs -rm -r /home/sqoop/teste1/
+    cp -f tim-intn-lib-sqoop-hdp/resources/sqoop-lib-configuration.xml ./
+    comandojava='java -Xms1024m -Xmx2048m -Dlog4j="$PWD/log4j.properties" -Dingestion_xml="$PWD/sqoop-lib-configuration.xml" -Denv_configuration="$PWD/env_configuration.xml" -cp "`hadoop classpath`:$SQOOP_HOME/lib/ojdbc5.jar:tim-intn-lib-sqoop-hdp-1.0.0.jar" br.com.tim.sqoopingestion.SqoopIngestion'
+    #java -Xms1024m -Xmx2048m -Dlog4j="$PWD/log4j.properties" -Dingestion_xml="$PWD/sqoop-lib-configuration.xml" -Denv_configuration="$PWD/env_configuration.xml" -cp "`hadoop classpath`:$SQOOP_HOME/lib/ojdbc5.jar:tim-intn-lib-sqoop-hdp-1.0.0.jar" br.com.tim.sqoopingestion.SqoopIngestion
+    echo "executando comando: "+$comandojava
+    $comandojava
+    hdfs dfs -ls -R /
+}
+
+if [ "$1" == "run" ]
+then 
+    run
+else
+    download
+fi
