@@ -56,10 +56,7 @@ docker run -itd --net=dockerlan --hostname=sqoop --name=sqoop -p 4422:22 brpedro
 You can run:
 
 ```
-sqoop eval --connect jdbc:oracle:thin:@oracle:1521:xe --username sqoop --password sqoop  --mapreduce-job-name jobname --query "select * from SQOOP.TESTE"
-
-sqoop import --connect jdbc:oracle:thin:@oracle:1521:xe --username sqoop --password sqoop  --mapreduce-job-name jobname --query "select * from SQOOP.TESTE" --export-dir  /teste.txt
-
+sqoop eval --connect jdbc:oracle:thin:@oracle:1521:xe --username sqoop --password sqoop --query "select * from SQOOP.TESTE"
 ```
 
 # Ssh
